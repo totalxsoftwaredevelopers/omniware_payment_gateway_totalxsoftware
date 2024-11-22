@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "927232074993",
+    "project_id": "package-testing-a45a4",
+    "storage_bucket": "package-testing-a45a4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:927232074993:android:720a35a2f7b63de6fbf550",
+        "android_client_info": {
+          "package_name": "com.totalx.omniware"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEyVLQPgpYzFTv7S2kAlqqXnRwLwYovw0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
