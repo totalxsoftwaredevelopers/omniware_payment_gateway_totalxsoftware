@@ -211,7 +211,7 @@ OmniwarePaymentGatewayTotalxsoftware.pay(
   appName: 'totalxsoftwareapp',
   //
   paymentMode: PaymentMode.LIVE, // LIVE or TEXT
-  amount: 100, // Amount in the smallest currency unit (e.g., 100 = 1.00 INR)
+  amount: 100, 
   apiKey: 'YOUR_API_KEY', // Replace with your actual API key
   merchantId: 'YOUR_MERCHANT_ID', // Replace with your actual Merchant ID
   salt: 'YOUR_SALT', // Replace with your actual Salt value

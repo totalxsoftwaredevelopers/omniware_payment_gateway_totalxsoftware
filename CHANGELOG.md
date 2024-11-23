@@ -1,4 +1,4 @@
-## 1.0.0
+## 1.0.1
 
 * Initial release of the Omniware Payment Gateway Flutter plugin.
 * Features include:
