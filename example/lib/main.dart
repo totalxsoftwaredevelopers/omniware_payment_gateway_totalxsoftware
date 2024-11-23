@@ -1,16 +1,15 @@
 import 'dart:developer';
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:omniware_payment_gateway_totalxsoftware/enums/currency.dart';
 import 'package:omniware_payment_gateway_totalxsoftware/omniware_payment_gateway_totalxsoftware.dart';
-import 'package:omniware_payment_gateway_totalxsoftware_example/firebase_options.dart';
+// import 'package:omniware_payment_gateway_totalxsoftware_example/firebase_options.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
   runApp(const MyApp());
 }
 
@@ -44,38 +43,45 @@ class PaymentScreen extends StatelessWidget {
             OmniwarePaymentGatewayTotalxsoftware.pay(
               context,
               saveInFirebase: true,
-              appName: 'omniware_payment_gateway_totalxsoftware',
+              appName: 'totalxsoftwareapp',
               //
-              paymentMode: PaymentMode.TEST,
-              amount: 100,
-              apiKey: 'fb6bca86-b429-4abf-a42f-824bdd29022e',
-              merchantId: '291499',
-              salt: '80c67bfdf027da08de88ab5ba903fecafaab8f6d',
+              paymentMode: PaymentMode.LIVE, // LIVE or TEXT
+              amount:
+                  100, // Amount in the smallest currency unit (e.g., 100 = 1.00 INR)
+              apiKey: 'YOUR_API_KEY', // Replace with your actual API key
+              merchantId:
+                  'YOUR_MERCHANT_ID', // Replace with your actual Merchant ID
+              salt: 'YOUR_SALT', // Replace with your actual Salt value
               description:
-                  'product or service', //Brief description of product or service that the customer is being charged for
-              currency: Currency.INR,
-              returnUrl: 'https://totalx.in',
+                  'Brief description of product or service being charged for', // Replace with your product description
+              currency: Currency.INR, // Change currency as required
+              returnUrl: 'https://totalx.in', // Replace with your return URL
               //
               userProfile: OmniwareUserProfile(
-                uid: 'unique_user_id',
-                name: 'John Doe',
-                email: 'qYqgK@example.com',
-                phoneNumber: '1234567890',
-                city: 'Malappuram',
-                state: 'Kerala',
-                country: 'IND',
-                zipcode: '679329',
-                // addressline_1: '',
-                // addressline_2: '',
+                uid: 'user_unique_id', // Replace with the user's unique ID
+                name: 'Customer Name', // Replace with the customer's name
+                email:
+                    'customer@example.com', // Replace with the customer's email
+                phoneNumber:
+                    '1234567890', // Replace with the customer's phone number
+                city: 'City Name', // Replace with the customer's city
+                state: 'State Name', // Replace with the customer's state
+                country:
+                    'Country Code', // Replace with the country code (e.g., IND)
+                zipcode: '123456', // Replace with the customer's zip code
+                // addressline_1: 'Address Line 1', // Uncomment and replace as needed
+                // addressline_2: 'Address Line 2', // Uncomment and replace as needed
               ),
               success: (response, orderId) {
-                log(response.toString());
+                log('Payment Success: $response');
+                log('Order ID: $orderId');
               },
               failure: (response, orderId) {
-                log(response.toString());
+                log('Payment Failure: $response');
+                log('Order ID: $orderId');
               },
               error: (response) {
-                log(response.toString());
+                log('Payment Error: $response');
               },
             );
           },

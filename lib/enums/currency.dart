@@ -2,11 +2,4 @@
 
 enum Currency {
   INR,
-  USD,
-  EUR,
-  GBP,
-  AUD,
-  CNY,
-  JPY,
-  KRW,
 }
