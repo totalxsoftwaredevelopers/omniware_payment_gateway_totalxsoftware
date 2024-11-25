@@ -1,3 +1,11 @@
+## 1.0.3
+
+- Optimized plugin performance to reduce processing latency.
+- Enhanced error handling for smoother user experience.
+- Added additional documentation for troubleshooting and advanced use cases.
+- Improved support for custom themes in Android.
+- Minor bug fixes and stability improvements.
+
 ## 1.0.1
 
 * Initial release of the Omniware Payment Gateway Flutter plugin.

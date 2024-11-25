@@ -1,4 +1,14 @@
 include: package:flutter_lints/flutter.yaml
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+# Additional rules or overrides can be added below.
+linter:
+  rules:
+    public_member_api_docs: true # Ensure public APIs have documentation.
+    prefer_const_constructors: true # Encourage using const where possible.
+    prefer_final_fields: true # Encourage using final for fields that aren't reassigned.
+    avoid_print: true # Discourage using print statements.
+
+analyzer:
+  exclude:
+    - lib/generated/**
+

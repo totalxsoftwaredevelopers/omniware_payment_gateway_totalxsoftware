@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:omniware_payment_gateway_totalxsoftware/enums/currency.dart';
 import 'package:omniware_payment_gateway_totalxsoftware/omniware_payment_gateway_totalxsoftware.dart';
 // import 'package:omniware_payment_gateway_totalxsoftware_example/firebase_options.dart';
 
@@ -46,15 +45,13 @@ class PaymentScreen extends StatelessWidget {
               appName: 'totalxsoftwareapp',
               //
               paymentMode: PaymentMode.LIVE, // LIVE or TEXT
-              amount:
-                  100, //
+              amount: 100, //
               apiKey: 'YOUR_API_KEY', // Replace with your actual API key
               merchantId:
                   'YOUR_MERCHANT_ID', // Replace with your actual Merchant ID
               salt: 'YOUR_SALT', // Replace with your actual Salt value
               description:
                   'Brief description of product or service being charged for', // Replace with your product description
-              currency: Currency.INR, // Change currency as required
               returnUrl: 'https://totalx.in', // Replace with your return URL
               //
               userProfile: OmniwareUserProfile(

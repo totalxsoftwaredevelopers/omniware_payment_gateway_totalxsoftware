@@ -1,5 +1,17 @@
 import 'package:flutter/material.dart';
 
+/// Displays a payment alert dialog to the user.
+///
+/// This function shows a dialog with an alert message explaining the payment process
+/// and asks the user to either agree or close the alert.
+///
+/// The user can either:
+/// - Tap "Agree" to continue with the payment process (returns `true`),
+/// - Tap "Close" to cancel the payment process (returns `false`).
+/// 
+/// [context]: The [BuildContext] used to display the dialog.
+/// 
+/// Returns a [Future<bool>] indicating whether the user agreed (true) or closed the alert (false).
 Future<bool> showPaymentAlert(BuildContext context) async {
   return await showDialog<bool>(
         context: context,
@@ -86,6 +98,5 @@ Future<bool> showPaymentAlert(BuildContext context) async {
             ],
           );
         },
-      ) ??
-      false; // Ensure it returns false if dialog is dismissed without any action.
+      ) ?? false; // Ensure it returns false if dialog is dismissed without any action.
 }

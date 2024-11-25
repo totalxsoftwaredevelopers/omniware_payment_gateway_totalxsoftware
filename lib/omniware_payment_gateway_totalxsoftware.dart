@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+library omniware_payment_gateway_totalxsoftware;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -13,11 +15,34 @@ import 'package:omniware_payment_gateway_totalxsoftware/widget/payment_alert.dar
 import 'package:omniware_payment_gateway_totalxsoftware/widget/show_progress.dart';
 import 'package:payment_gateway_plugin/payment_gateway_plugin.dart';
 
-export 'package:omniware_payment_gateway_totalxsoftware/enums/payment_mode.dart';
-export 'package:omniware_payment_gateway_totalxsoftware/models/omniware_user_profile_model.dart';
-export 'package:omniware_payment_gateway_totalxsoftware/omniware_payment_gateway_totalxsoftware.dart';
+export 'enums/currency.dart';
+export 'enums/payment_mode.dart';
+export 'models/omniware_user_profile_model.dart';
+export 'service/generate_hash.dart';
+export 'service/generate_order_id.dart';
+export 'service/save_firebase.dart';
+export 'widget/payment_alert.dart';
+export 'widget/show_progress.dart';
 
+/// Omniware Payment Gateway SDK
+///
+/// Provides a static method [pay] to facilitate payments using the Omniware Payment Gateway.
 class OmniwarePaymentGatewayTotalxsoftware {
+  /// Initiates a payment process using the Omniware Payment Gateway.
+  ///
+  /// Parameters:
+  /// - [context]: BuildContext for showing dialogs and progress indicators.
+  /// - [paymentMode]: Selected payment mode (e.g., UPI, card, etc.).
+  /// - [saveInFirebase]: Save transaction in Firebase (if true).
+  /// - [amount]: Payment amount (must be >= 2).
+  /// - [apiKey], [merchantId], [salt]: Credentials for payment gateway.
+  /// - [appName]: Application name initiating the payment.
+  /// - [description]: Description of the transaction.
+  /// - [returnUrl]: URL to redirect after payment.
+  /// - [userProfile]: User profile information.
+  /// - [success]: Callback for successful transactions.
+  /// - [failure]: Callback for failed transactions.
+  /// - [error]: Callback for errors during the payment process.
   static Future<void> pay(
     BuildContext context, {
     required PaymentMode paymentMode,
@@ -28,45 +53,49 @@ class OmniwarePaymentGatewayTotalxsoftware {
     required String salt,
     required String appName,
     required String description,
-    required Currency currency,
     required String returnUrl,
     required OmniwareUserProfile userProfile,
-    required Function(
-      Map<String, dynamic>? response,
-      String orderId,
-    ) success,
-    required Function(
-      Map<String, dynamic>? response,
-      String orderId,
-    ) failure,
+    required Function(Map<String, dynamic>? response, String orderId) success,
+    required Function(Map<String, dynamic>? response, String orderId) failure,
     required Function(String response) error,
   }) async {
     try {
+      // Enforce INR currency
+      const currency = Currency.INR;
+
+      // Validate parameters
       if (apiKey.trim().isEmpty) {
-        error.call('Api Key cannot be empty');
+        error('API Key cannot be empty');
         return;
       }
       if (merchantId.trim().isEmpty) {
-        error.call('Merchant Id cannot be empty');
+        error('Merchant ID cannot be empty');
         return;
       }
-      if (merchantId.trim().isEmpty) {
-        error.call('salt cannot be empty');
+      if (salt.trim().isEmpty) {
+        error('Salt cannot be empty');
+        return;
+      }
+      if (amount < 2) {
+        error('Amount must be at least 2');
         return;
       }
 
-      //Payment Alert
+      // Show payment alert
       final isAgree = await showPaymentAlert(context);
-
       if (!isAgree) return;
 
+      // Show progress
       showProgress(context);
+
+      // Generate order ID and Firebase document ID
       final orderId = generateOrderId(merchantId);
-      String? docid;
+      String? docId;
       if (saveInFirebase) {
-        docid = SaveFirebase.createFirebasePaymentID();
+        docId = SaveFirebase.createFirebasePaymentID();
       }
 
+      // Save processing transaction in Firebase
       if (saveInFirebase) {
         await SaveFirebase.createProcessingTransaction(
           apiKey: apiKey,
@@ -75,13 +104,14 @@ class OmniwarePaymentGatewayTotalxsoftware {
           orderId: orderId,
           amount: amount,
           appName: appName,
-          transaction: docid!,
+          transaction: docId!,
           userProfile: userProfile,
           description: description,
         );
       }
-      // Payment parameters
-      Map<String, String> parameters = {
+
+      // Generate payment parameters
+      final parameters = {
         'api_key': apiKey,
         'order_id': orderId,
         'mode': paymentMode.name,
@@ -101,44 +131,42 @@ class OmniwarePaymentGatewayTotalxsoftware {
           'address_line_2': userProfile.addressline_2!,
         'return_url': returnUrl,
       };
-      // Compute hash
-      final hash = generateHash(salt: salt, parameters: parameters);
-      // Payment options
-      Map<String, dynamic> options = {
-        ...parameters,
-        'hash': hash,
-      };
 
-      // Launch payment
+      // Generate hash
+      final hash = GenerateHash().generate(salt: salt, parameters: parameters);
+
+      // Launch payment gateway
       final response = await PaymentGatewayPlugin.open(
-          'https://pgbiz.omniware.in/v2/paymentrequest', options);
-      Navigator.pop(context);
-      if (response != null) {
-        String status = response['status'] ?? 'Unknown';
+        'https://pgbiz.omniware.in/v2/paymentrequest',
+        {...parameters, 'hash': hash},
+      );
 
-        if (status == "Success" || status == "success") {
-          // Handle success
+      Navigator.pop(context);
+
+      if (response != null) {
+        final status = response['status']?.toLowerCase() ?? 'unknown';
+        if (status == 'success') {
           if (saveInFirebase) {
             SaveFirebase.updateSuccessTransaction(
-              transaction: docid!,
+              transaction: docId!,
               successResponse: response,
             );
           }
-          success.call(response, orderId);
+          success(response, orderId);
         } else {
           if (saveInFirebase) {
             SaveFirebase.updateFailureTransaction(
-              transaction: docid!,
+              transaction: docId!,
               failureResponse: response,
             );
           }
-          failure.call(response, orderId);
+          failure(response, orderId);
         }
       } else {
-        error.call("No response received from the payment gateway.");
+        error('No response received from the payment gateway.');
       }
     } on Exception catch (e) {
-      error.call(e.toString());
+      error(e.toString());
       Navigator.pop(context);
     }
   }

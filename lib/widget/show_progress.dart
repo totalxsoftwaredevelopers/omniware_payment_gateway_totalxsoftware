@@ -1,6 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/// Displays a loading dialog to the user.
+///
+/// This function shows a custom loading dialog with an activity indicator
+/// and a message "Please wait...". It prevents the user from interacting
+/// with the rest of the UI while the dialog is visible.
+///
+/// [context]: The [BuildContext] used to display the dialog.
 void showProgress(BuildContext context) {
   showDialog(
     context: context,
@@ -9,6 +16,14 @@ void showProgress(BuildContext context) {
 }
 
 // ignore: must_be_immutable
+/// A custom loading dialog widget that shows an activity indicator and a message.
+///
+/// This widget displays a loading dialog with a message "Please wait..." and
+/// prevents user interactions while the dialog is visible. The dialog cannot
+/// be dismissed by tapping outside of it, as the `canPop` property is set to false.
+///
+/// The dialog consists of a [CupertinoActivityIndicator] to indicate loading
+/// and a text message to inform the user about the ongoing process.
 class _CustomLoadingDailog extends StatelessWidget {
   const _CustomLoadingDailog();
 
@@ -18,7 +33,7 @@ class _CustomLoadingDailog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       child: PopScope(
-        canPop: false,
+        canPop: false, // Prevents dialog from being dismissed by tapping outside
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,

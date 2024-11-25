@@ -1,6 +1,6 @@
 name: omniware_payment_gateway_totalxsoftware
 description: "Omniware Payment Gateway Plugin for Flutter under TotalxSoftware"
-version: 1.0.1
+version: 1.0.3
 homepage: "https://github.com/totalxsoftwaredevelopers/omniware_payment_gateway_totalxsoftware"
 
 environment:
